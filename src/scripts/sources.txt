@@ -1,0 +1,10 @@
+Wallis-et-Futuna
+https://wf.popgis.spc.int/index.php#c=article&page=P003
+
+Polynésie-francaise
+https://www.data.gouv.fr/fr/datasets/limites-geographiques-administratives/
+
+https://www.tefenua.data.gov.pf/maps/6e392df616c949309eda19656450562a/about
+
+Nouvelle Calédonie
+https://georep-dtsi-sgt.opendata.arcgis.com/maps/e1d853903cc64d40af7fbb5ee57e3029/about
