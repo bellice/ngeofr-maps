@@ -5,5 +5,8 @@
 .tmp
 src/raw_data/
 src/processed_data/standard
-public/*
-!public/*-gen.parquet
+
+# Ignorer TOUS les .parquet dans tous les sous-répertoires de public/
+public/**/*.parquet
+# Sauf ceux finissant par -gen.parquet
+!public/**/*-gen.parquet
