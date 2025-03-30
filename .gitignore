@@ -4,5 +4,6 @@
 .env
 .tmp
 src/raw_data/
-src/processed_data/
-public/
+src/processed_data/standard
+public/*
+!public/*-gen.parquet

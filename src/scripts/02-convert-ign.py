@@ -5,7 +5,7 @@ import re
 # Configuration
 COG_YEAR = "2025"
 BASE_PATHS = [Path("./src/raw_data/ign/")]
-OUTPUT_DIR = Path("./src/processed_data/")
+OUTPUT_DIR = Path("./src/processed_data/standard")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 CRS_CONFIG = {
