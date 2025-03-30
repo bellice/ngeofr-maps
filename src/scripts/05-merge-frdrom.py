@@ -34,23 +34,31 @@ COORD_DEST = [
     [120000 + (SIDE_MAX_BOX[0] + SPACE_BETWEEN_BOX), 6500000 - 3 * (SIDE_MAX_BOX[0] + SPACE_BETWEEN_BOX)]
 ]
 
-def main(input_dir="./src/processed_data/", output_dir="./src/processed_data/", is_generalized=False):
+def main(input_dir=None, output_dir=None, is_generalized=False):
     """
     Fonction principale qui charge, transforme et exporte les données géographiques.
     
     Args:
-        input_dir (str): Répertoire contenant les fichiers d'entrée
-        output_dir (str): Répertoire où seront stockés les fichiers de sortie
+        input_dir (str/Path): Répertoire contenant les fichiers d'entrée
+        output_dir (str/Path): Répertoire où seront stockés les fichiers de sortie
         is_generalized (bool): Indique si on traite les fichiers généralisés
     """
+    # Définition des chemins relatifs
+    base_dir = Path(__file__).parent.parent  # Racine du projet (ngeofr-maps)
+    default_data_dir = base_dir / "src" / "processed_data"
+    
+    # Gestion des chemins d'entrée/sortie
+    input_dir = Path(input_dir) if input_dir else default_data_dir
+    output_dir = Path(output_dir) if output_dir else default_data_dir
+    
     # Création des répertoires de sortie
     if is_generalized:
-        input_dir = os.path.join(input_dir, "gen")
-        output_dir = os.path.join(output_dir, "gen")
+        input_dir = input_dir / "gen"
+        output_dir = output_dir / "gen"
     else:
-        output_dir = os.path.join(output_dir, "standard")
+        output_dir = output_dir / "standard"
         
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     
     # Suffixe pour les fichiers généralisés
     gen_suffix = "-gen" if is_generalized else ""
@@ -59,7 +67,7 @@ def main(input_dir="./src/processed_data/", output_dir="./src/processed_data/", 
     natural_output = get_output_filename("natural", output_dir, gen_suffix)
     compact_output = get_output_filename("compact", output_dir, gen_suffix)
     
-    both_exist = Path(natural_output).exists() and Path(compact_output).exists()
+    both_exist = natural_output.exists() and compact_output.exists()
     
     if both_exist:
         print(f"Les fichiers existent déjà dans {output_dir}. Traitement ignoré.")
@@ -72,19 +80,19 @@ def main(input_dir="./src/processed_data/", output_dir="./src/processed_data/", 
         print("Erreur : Aucun territoire chargé. Vérifiez le répertoire d'entrée.")
         return
     
-    if not Path(natural_output).exists():
+    if not natural_output.exists():
         print("Traitement en position naturelle...")
         fr_drom_natural = transform_natural(geometries)
         export_geometries(fr_drom_natural, COG_YEAR, "natural", output_dir, gen_suffix)
     else:
-        print(f"Le fichier {os.path.basename(natural_output)} existe déjà. Traitement ignoré.")
+        print(f"Le fichier {natural_output.name} existe déjà. Traitement ignoré.")
     
-    if not Path(compact_output).exists():
+    if not compact_output.exists():
         print("Traitement en position compacte...")
         fr_drom_compact = transform_compact(geometries)
         export_geometries(fr_drom_compact, COG_YEAR, "compact", output_dir, gen_suffix)
     else:
-        print(f"Le fichier {os.path.basename(compact_output)} existe déjà. Traitement ignoré.")
+        print(f"Le fichier {compact_output.name} existe déjà. Traitement ignoré.")
 
 def get_output_filename(style, output_dir, gen_suffix=""):
     """
@@ -95,19 +103,14 @@ def get_output_filename(style, output_dir, gen_suffix=""):
     else:
         filename = f"com-frdrom-{COG_YEAR}{gen_suffix}.parquet"
     
-    return str(Path(output_dir) / filename)
+    return Path(output_dir) / filename
 
 def load_territories(input_dir, gen_suffix=""):
     """
     Charge les fichiers géographiques pour chaque territoire spécifié.
-    
-    Args:
-        input_dir (str): Répertoire contenant les fichiers
-        gen_suffix (str): Suffixe pour les fichiers généralisés ('-gen')
     """
     geometries = {}
     for territory in CRS_CONFIG.keys():
-        # Mise à jour du format de nom de fichier conformément aux exemples fournis
         filename = f"com-{territory.lower()}-{COG_YEAR}{gen_suffix}.parquet"
         file_path = Path(input_dir) / filename
         
@@ -199,16 +202,8 @@ def transform_geometry(gdf, scale_factor, translation):
 
 def export_geometries(gdf, proj_year, style, output_dir, gen_suffix=""):
     """
-    Exporte les géométries transformées avec une nomenclature optimisée.
-    
-    Args:
-        gdf (GeoDataFrame): Données à exporter
-        proj_year (str): Année de projection
-        style (str): Style de projection ('natural' ou 'compact')
-        output_dir (str): Répertoire de sortie
-        gen_suffix (str): Suffixe pour les fichiers généralisés ('-gen')
+    Exporte les géométries transformées.
     """
-    # Nomenclature adaptée en fonction du style et du suffixe
     if style == "compact":
         filename = f"com-frdrom-compact-{proj_year}{gen_suffix}.parquet"
     else:
@@ -216,12 +211,11 @@ def export_geometries(gdf, proj_year, style, output_dir, gen_suffix=""):
     
     output_path = Path(output_dir) / filename
     
-    # Export avec vérifications
     gdf.reset_index(drop=True).to_parquet(
         output_path,
         compression='gzip',
         index=False,
-        schema_version="1.0.0"  # Conservation des métadonnées géospatiales
+        schema_version="1.0.0"
     )
     
     file_size = output_path.stat().st_size / (1024 * 1024)
@@ -230,16 +224,8 @@ def export_geometries(gdf, proj_year, style, output_dir, gen_suffix=""):
 if __name__ == "__main__":
     # Traitement des fichiers standards
     print("\n=== TRAITEMENT DES FICHIERS STANDARDS ===")
-    main(
-        input_dir="O:/Document/carto-engine/ngeofr-maps/src/processed_data", 
-        output_dir="O:/Document/carto-engine/ngeofr-maps/src/processed_data", 
-        is_generalized=False
-    )
+    main(is_generalized=False)
     
     # Traitement des fichiers généralisés
     print("\n=== TRAITEMENT DES FICHIERS GÉNÉRALISÉS ===")
-    main(
-        input_dir="O:/Document/carto-engine/ngeofr-maps/src/processed_data", 
-        output_dir="O:/Document/carto-engine/ngeofr-maps/src/processed_data", 
-        is_generalized=True
-    )
+    main(is_generalized=True)

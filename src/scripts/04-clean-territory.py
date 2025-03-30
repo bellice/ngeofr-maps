@@ -4,8 +4,8 @@ import logging
 from shapely.validation import make_valid
 
 # Configuration
-INPUT_DIR = Path("O:/Document/carto-engine/ngeofr-maps/src/processed_data/temp")
-OUTPUT_DIR = Path("O:/Document/carto-engine/ngeofr-maps/src/processed_data/gen")
+INPUT_DIR = Path("./src/processed_data/temp")
+OUTPUT_DIR = Path("./src/processed_data/gen")
 OUTPUT_DIR.mkdir(exist_ok=True)
 SURFACE_THRESHOLD = 100000  # 100 000 m²
 
