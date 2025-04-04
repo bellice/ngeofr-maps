@@ -9,7 +9,7 @@ ngeofr-maps propose une chaîne de traitement des données géographiques commun
 
 ## Statut des millésimes du COG
 
-![COG 2025](https://img.shields.io/badge/COG%202025-🔄%20Disponible-brightgreen)
+![COG 2025](https://img.shields.io/badge/COG%202025-✅%20Disponible-brightgreen)
 
 ## Table des matières
 - [Installation](#installation)
