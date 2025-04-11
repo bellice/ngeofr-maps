@@ -2,7 +2,7 @@
 
 ## Description
 
-ngeofr-maps propose une chaîne de traitement des données géographiques communales françaises (métropole + DROM) issues de l'IGN. Ce projet produit des données géométriques optimisées pour :
+**ngeofr-maps** propose une chaîne de traitement des données géographiques communales françaises (hexagone + DROM) issues de l'IGN. Ce projet produit des données géométriques optimisées pour :
 - la cartographie web interactive
 - l'analyse spatiale
 - les systèmes d'information géographique
@@ -23,7 +23,7 @@ ngeofr-maps propose une chaîne de traitement des données géographiques commun
 
 
 ## Installation
-Pour installer le projet ngeofr, clonez le dépôt :
+Pour installer le projet **ngeofr-maps**, clonez le dépôt :
 
 ```bash
 git clone https://github.com/votre-repo/ngeofr-maps.git
